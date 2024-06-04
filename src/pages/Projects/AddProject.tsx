@@ -18,7 +18,22 @@ function AddProject() {
     console.log(list);
   };
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    thumbnail: string;
+    industryName: string;
+    projectCompanyName: string;
+    projectCompanyDesc: string;
+    projectDesc: string;
+    scopeOfWorkLine: string;
+    scopeOfWork: string[];
+    projectGoalLine: string;
+    projectGoal: string[];
+    screens: string[];
+    researchLine: string;
+    resultLine: string;
+    chellenges: string[];
+    resultStatistics: { number: string; description: string }[];
+  }>({
     thumbnail: '',
     industryName: '',
     projectCompanyName: '',
@@ -211,7 +226,6 @@ function AddProject() {
                   value={formData.industryName}
                 />
               </div>
-
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Company Name
@@ -225,7 +239,6 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Company Desc
@@ -239,7 +252,6 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 ></textarea>
               </div>
-
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Project Desc
@@ -253,13 +265,12 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 ></textarea>
               </div>
-
               <hr className="border-t border-black my-6" />
+              // ...
               <MultiSelect
                 id="multiSelect"
                 wrapper={func_setselectedscopeOfWork}
               />
-
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Scope of Work line
@@ -273,7 +284,6 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-
               <hr className="border-t border-black my-6" />
               <div>
                 <label className="mb-3 block text-black dark:text-white">
@@ -306,7 +316,6 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Project Goal 2
@@ -322,7 +331,6 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Project Goal 2
@@ -338,7 +346,6 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Research Line
@@ -352,7 +359,6 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-
               <hr className="border-t border-black my-6" />
               <label className="mb-3 block text-black dark:text-white">
                 Chellenges
@@ -402,9 +408,7 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-
               <hr className="border-t border-black my-6" />
-
               <div>
                 <label className="mb-3 block text-black dark:text-white">
                   Result Line
@@ -418,7 +422,6 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-
               <label className="mb-3 block text-black dark:text-white">
                 Result
               </label>
@@ -521,7 +524,6 @@ function AddProject() {
                   </div>
                 </div>
               </div>
-
               <button
                 type="button"
                 onClick={handleSubmit}

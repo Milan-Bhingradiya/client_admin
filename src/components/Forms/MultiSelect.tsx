@@ -9,14 +9,24 @@ interface Option {
 
 interface DropdownProps {
   id: string;
+  wrapper: (values: string[]) => void;
 }
 
-const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
+const MultiSelect: React.FC<DropdownProps> = ({ id, wrapper }: any) => {
   const [options, setOptions] = useState<Option[]>([]);
   const [selected, setSelected] = useState<number[]>([]);
   const [show, setShow] = useState(false);
   const dropdownRef = useRef<any>(null);
   const trigger = useRef<any>(null);
+
+  // wrapper means setstate inside this function ...
+  const getSelectedValues = () => {
+    const selectedArr: string[] = [];
+    const selectedOptions = options.filter((option) => option.selected);
+
+    selectedOptions.map((option) => selectedArr.push(option.text));
+    wrapper(selectedArr);
+  };
 
   useEffect(() => {
     const loadOptions = () => {
@@ -37,31 +47,32 @@ const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
     loadOptions();
   }, [id]);
 
-   const open = () => {
-     setShow(true);
-   };
+  const open = () => {
+    setShow(true);
+  };
 
-   const isOpen = () => {
-     return show === true;
-   };
+  const isOpen = () => {
+    return show === true;
+  };
 
- const select = (index: number, event: React.MouseEvent) => {
-   const newOptions = [...options];
+  const select = (index: number, event: React.MouseEvent) => {
+    const newOptions = [...options];
 
-   if (!newOptions[index].selected) {
-     newOptions[index].selected = true;
-     newOptions[index].element = event.currentTarget as HTMLElement;
-     setSelected([...selected, index]);
-   } else {
-     const selectedIndex = selected.indexOf(index);
-     if (selectedIndex !== -1) {
-       newOptions[index].selected = false;
-       setSelected(selected.filter((i) => i !== index));
-     }
-   }
+    if (!newOptions[index].selected) {
+      newOptions[index].selected = true;
+      newOptions[index].element = event.currentTarget as HTMLElement;
+      setSelected([...selected, index]);
+    } else {
+      const selectedIndex = selected.indexOf(index);
+      if (selectedIndex !== -1) {
+        newOptions[index].selected = false;
+        setSelected(selected.filter((i) => i !== index));
+      }
+    }
 
-   setOptions(newOptions);
- };
+    setOptions(newOptions);
+    getSelectedValues();
+  };
 
   const remove = (index: number) => {
     const newOptions = [...options];
@@ -72,38 +83,41 @@ const MultiSelect: React.FC<DropdownProps> = ({ id }) => {
       setSelected(selected.filter((i) => i !== index));
       setOptions(newOptions);
     }
+
+    getSelectedValues();
   };
 
   const selectedValues = () => {
     return selected.map((option) => options[option].value);
   };
 
-    useEffect(() => {
-      const clickHandler = ({ target }: MouseEvent) => {
-        if (!dropdownRef.current) return;
-        if (
-          !show ||
-          dropdownRef.current.contains(target) ||
-          trigger.current.contains(target)
-        )
-          return;
-        setShow(false);
-      };
-      document.addEventListener('click', clickHandler);
-      return () => document.removeEventListener('click', clickHandler);
-    });
+  useEffect(() => {
+    const clickHandler = ({ target }: MouseEvent) => {
+      if (!dropdownRef.current) return;
+      if (
+        !show ||
+        dropdownRef.current.contains(target) ||
+        trigger.current.contains(target)
+      )
+        return;
+      setShow(false);
+    };
+    document.addEventListener('click', clickHandler);
+    return () => document.removeEventListener('click', clickHandler);
+  });
 
   return (
     <div className="relative z-50">
+      {/* <button onClick={getSelectedValues}>deded</button> */}
       <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-        Multiselect Dropdown
+        work that you do for in peoject for client
       </label>
       <div>
         <select className="hidden" id={id}>
-          <option value="1">Option 2</option>
-          <option value="2">Option 3</option>
-          <option value="3">Option 4</option>
-          <option value="4">Option 5</option>
+          <option value="1">UI/UX</option>
+          <option value="2">Web</option>
+          <option value="3">APP</option>
+          <option value="4">Marketing</option>
         </select>
 
         <div className="flex flex-col items-center">
