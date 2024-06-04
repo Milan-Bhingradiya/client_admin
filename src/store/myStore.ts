@@ -7,11 +7,10 @@
 //     setone: (x:[]) => set((state)=>({ one: x })),
 // }))
 
+import { create } from 'zustand';
 
-import { create } from 'zustand'
-
- export const mystore = create((set) => ({
+export const mystore = create((set) => ({
   imgdata: [],
-//   updateBears: (newBears) => set((state) => ({ bears: [...state.bears,newBears]  })),
-  updateimgdata: (newBears) => set((state) => ({ imgdata: newBears  })),
-}))
+  //   updateBears: (newBears) => set((state) => ({ bears: [...state.bears,newBears]  })),
+  updateimgdata: (newBears) => set(() => ({ imgdata: newBears })),
+}));

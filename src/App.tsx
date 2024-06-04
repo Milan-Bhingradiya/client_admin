@@ -5,8 +5,8 @@ import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import AddProject from './pages/Projects/AddProject';
 import GetAllProject from './pages/Projects/GetAllProject';
-import M from './pages/Projects/M';
 import SetHomePageProject from './pages/Projects/SetHomePageProject';
+import ShowAllMessages from './pages/messages/ShowAllMessages';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -47,29 +47,28 @@ function App() {
           path="/getallprojects"
           element={
             <>
-              <PageTitle title="add" />
               <GetAllProject />
             </>
           }
         />
-        <Route
-          path="/m"
-          element={
-            <>
-            <M></M>
-            </>
-          }
-        />
-      
+
         <Route
           path="/sethomepageprojects"
           element={
             <>
-           <SetHomePageProject></SetHomePageProject>
+              <SetHomePageProject></SetHomePageProject>
             </>
           }
         />
-      
+
+        <Route
+          path="/showallmessages"
+          element={
+            <>
+              <ShowAllMessages></ShowAllMessages>
+            </>
+          }
+        />
       </Routes>
     </>
   );
