@@ -52,11 +52,11 @@ function GetAllProject() {
 
   return (
     <DefaultLayout>
-      <div>
+      <div className="bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         {docs.map((project) => {
           return (
-            <div>
-              <div className="m-6 mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+            <div className="shadow-default bg-white  dark:border-strokedark dark:bg-boxdark">
+              <div className="m-6 mx-auto  shadow-lg rounded-lg overflow-hidden">
                 <div className="m-6 ">
                   <h4 className="font-semibold mb-1">ID: {project.id}</h4>
                   <h4 className="font-semibold mb-1">Thumbnail</h4>
