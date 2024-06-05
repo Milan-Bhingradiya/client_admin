@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import { firestoreInstance } from '../../utils/firebase';
-import { collection, getDocs, query } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, query } from 'firebase/firestore';
+import garbage from '../../../public/garbage.svg';
+import firebase from 'firebase/compat/app';
 
 function GetAllProject() {
   const [docs, setDocs] = useState<
@@ -50,12 +52,93 @@ function GetAllProject() {
     getAllProject();
   }, []);
 
+  const [idForDelete, setidForDelete] = useState('');
+  const [isModalOpen, setisModalOpen] = useState(false);
+
+  const deleteProject = async () => {
+    deleteDoc(doc(firestoreInstance, 'projects', idForDelete))
+      .then(() => {
+        setisModalOpen(false);
+        setDocs(docs.filter((doc) => doc.id !== idForDelete));
+      })
+      .catch((error) => {
+        console.error('Error removing document: ', error);
+      });
+  };
+
   return (
     <DefaultLayout>
-      <div className="bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        {docs.map((project) => {
+      <div className=" shadow-default dark:border-strokedark dark:bg-boxdark">
+        {isModalOpen && (
+          <div className="fixed z-40 inset-0  flex items-center justify-center bg-slate-700 bg-opacity-50">
+            <div className="bg-white rounded-lg p-8 max-w-md">
+              <div className="flex justify-end">
+                <button
+                  className="text-gray-600 hover:text-gray-800"
+                  onClick={() => {
+                    setisModalOpen(false);
+                  }}
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="md:flex items-center">
+                <div className="mt-4 md:mt-0 md:ml-6 text-center md:text-left">
+                  <p className="font-bold">Delete your account</p>
+                  <p className="text-sm text-gray-700 mt-1">
+                    You will lose all of your data by deleting your account.
+                    This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+              <div className="text-center md:text-right mt-4 md:flex md:justify-end">
+                <button
+                  onClick={deleteProject}
+                  className="block w-full md:inline-block md:w-auto px-4 py-3 md:py-2 bg-red-200 text-red-700 rounded-lg font-semibold text-sm md:ml-2 md:order-2"
+                >
+                  Delete Account
+                </button>
+                <button
+                  onClick={() => {
+                    setisModalOpen(false);
+                  }}
+                  className="block w-full md:inline-block md:w-auto px-4 py-3 md:py-2 bg-gray-200 rounded-lg font-semibold text-sm mt-4
+          md:mt-0 md:order-1"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {docs.map((project, index) => {
           return (
-            <div className="shadow-default bg-white  dark:border-strokedark dark:bg-boxdark">
+            <div
+              key={index}
+              className="relative m-4 bg-white  dark:border-strokedark dark:bg-boxdark"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className=" absolute right-4 top-4 lucide lucide-trash-2"
+                onClick={() => {
+                  setidForDelete(project.id);
+                  setisModalOpen(true);
+                }}
+              >
+                <path d="M3 6h18" />
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                <line x1="10" x2="10" y1="11" y2="17" />
+                <line x1="14" x2="14" y1="11" y2="17" />
+              </svg>
               <div className="m-6 mx-auto  shadow-lg rounded-lg overflow-hidden">
                 <div className="m-6 ">
                   <h4 className="font-semibold mb-1">ID: {project.id}</h4>

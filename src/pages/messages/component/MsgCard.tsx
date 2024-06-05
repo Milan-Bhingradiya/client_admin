@@ -1,9 +1,19 @@
 import React from 'react';
 
-function MsgCard({ title, email, time, message }:{title:string, email:string, time:string, message:string}) {
+function MsgCard({
+  title,
+  email,
+  time,
+  message,
+}: {
+  title: string;
+  email: string;
+  time: string;
+  message: string;
+}) {
   return (
     <div>
-      <div className="relative flex flex-col mt-6 text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-96">
+      <div className="relative flex flex-col mt-6 text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-96 bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="p-6">
           <h5 className="block mb-2 font-sans text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
             {title}
