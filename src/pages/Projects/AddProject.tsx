@@ -23,37 +23,17 @@ function AddProject() {
     thumbnail: string;
     industryName: string;
     projectCompanyName: string;
-    projectCompanyDesc: string;
-    projectDesc: string;
-    scopeOfWorkLine: string;
-    scopeOfWork: string[];
-    projectGoalLine: string;
-    projectGoal: string[];
+    solution: string;
     screens: string[];
-    researchLine: string;
-    resultLine: string;
     chellenges: string[];
-    resultStatistics: { number: string; description: string }[];
   }>({
     title: '',
     thumbnail: '',
     industryName: '',
     projectCompanyName: '',
-    projectCompanyDesc: '',
-    projectDesc: '',
-    scopeOfWorkLine: '', // Use camelCase for consistency
-    scopeOfWork: selectedscopeOfWork, // Use camelCase for consistency
-    projectGoalLine: '', // Use camelCase for consistency
-    projectGoal: [], // Use camelCase for consistency
+    solution: '',
     screens: [],
-    researchLine: '',
-    resultLine: '',
     chellenges: [],
-    resultStatistics: [
-      { number: '', description: '' },
-      { number: '', description: '' },
-      { number: '', description: '' },
-    ],
   });
 
   const handleInputChange = (event: any) => {
@@ -67,18 +47,6 @@ function AddProject() {
     setFormData((prevFormData: any) => {
       const updatedGoals: any[] = [...prevFormData[name]];
       updatedGoals[index] = value;
-      return {
-        ...prevFormData,
-        [name]: updatedGoals,
-      };
-    });
-  };
-
-  const handleArrayOfObjectInputChange = (event: any, index: number) => {
-    const { name, value } = event.target;
-    setFormData((prevFormData: any) => {
-      const updatedGoals: any[] = [...prevFormData['resultStatistics']];
-      updatedGoals[index][name] = value;
       return {
         ...prevFormData,
         [name]: updatedGoals,
@@ -202,7 +170,8 @@ function AddProject() {
       {!isLoading && (
         <div>
           <label className="mb-3 block text-black dark:text-white m-4">
-            First img is thumnnail Upload images only 4
+            First img is thumnnail, Upload total 6 images , first is considered
+            as thumbnail
           </label>
           <div className=" bg-slate-300 m-2 rounded-lg">
             <ImagePick></ImagePick>
@@ -256,125 +225,21 @@ function AddProject() {
               </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">
-                  Company Desc
+                  Solution
                 </label>
                 <textarea
-                  name={'projectCompanyDesc'}
+                  name={'solution'}
                   onChange={handleInputChange}
-                  value={formData.projectCompanyDesc}
+                  value={formData.solution}
                   rows={6}
                   placeholder="Default textarea"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 ></textarea>
               </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Project Desc
-                </label>
-                <textarea
-                  name={'projectDesc'}
-                  onChange={handleInputChange}
-                  value={formData.projectDesc}
-                  rows={6}
-                  placeholder="Default textarea"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                ></textarea>
-              </div>
-              <hr className="border-t border-black my-6" />
-              // ...
               <MultiSelect
                 id="multiSelect"
                 wrapper={func_setselectedscopeOfWork}
               />
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Scope of Work line
-                </label>
-                <input
-                  name="scopeOfWorkLine"
-                  onChange={handleInputChange}
-                  value={formData.scopeOfWorkLine}
-                  type="text"
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <hr className="border-t border-black my-6" />
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Project Goal Line
-                </label>
-                <input
-                  name="projectGoalLine"
-                  onChange={handleInputChange}
-                  value={formData.projectGoalLine}
-                  type="text"
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <label className="mb-3 block text-black dark:text-white">
-                Project Goal that client want
-              </label>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Project Goal 1
-                </label>
-                <input
-                  name="projectGoal"
-                  onChange={(e) => {
-                    handleArrayInputChange(e, 0);
-                  }}
-                  value={formData.projectGoal[0]}
-                  type="text"
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Project Goal 2
-                </label>
-                <input
-                  name="projectGoal"
-                  onChange={(e) => {
-                    handleArrayInputChange(e, 1);
-                  }}
-                  value={formData.projectGoal[1]}
-                  type="text"
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Project Goal 2
-                </label>
-                <input
-                  name="projectGoal"
-                  onChange={(e) => {
-                    handleArrayInputChange(e, 2);
-                  }}
-                  value={formData.projectGoal[2]}
-                  type="text"
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  Research Line
-                </label>
-                <input
-                  name="researchLine"
-                  onChange={handleInputChange}
-                  value={formData.researchLine}
-                  type="text"
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <hr className="border-t border-black my-6" />
               <label className="mb-3 block text-black dark:text-white">
                 Chellenges
               </label>
@@ -423,122 +288,22 @@ function AddProject() {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-              <hr className="border-t border-black my-6" />
               <div>
                 <label className="mb-3 block text-black dark:text-white">
-                  Result Line
+                  fouth Chellenge
                 </label>
                 <input
-                  name={'resultLine'}
-                  onChange={handleInputChange}
-                  value={formData.resultLine}
                   type="text"
+                  name="chellenges"
+                  onChange={(e) => {
+                    handleArrayInputChange(e, 3);
+                  }}
+                  value={formData.chellenges[3]}
                   placeholder="Default Input"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-              <label className="mb-3 block text-black dark:text-white">
-                Result
-              </label>
-              <div className="flex flex-row">
-                <div>
-                  {/* left */}
-                  <div>
-                    <label className="mb-3 block text-black dark:text-white">
-                      first
-                    </label>
-                    <input
-                      name="description"
-                      onChange={(e) => {
-                        handleArrayOfObjectInputChange(e, 0);
-                      }}
-                      value={formData.resultStatistics[0]!.description}
-                      type="text"
-                      placeholder="Default Input"
-                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-3 block text-black dark:text-white">
-                      second
-                    </label>
-                    <input
-                      name="description"
-                      onChange={(e) => {
-                        handleArrayOfObjectInputChange(e, 1);
-                      }}
-                      value={formData.resultStatistics[1]!.description}
-                      type="text"
-                      placeholder="Default Input"
-                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-3 block text-black dark:text-white">
-                      third
-                    </label>
-                    <input
-                      name="description"
-                      onChange={(e) => {
-                        handleArrayOfObjectInputChange(e, 2);
-                      }}
-                      value={formData.resultStatistics[2]!.description}
-                      type="text"
-                      placeholder="Default Input"
-                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                  </div>
-                </div>
-
-                {/* right */}
-                <div className="ml-5">
-                  <div>
-                    <label className="mb-3 block text-black dark:text-white">
-                      number
-                    </label>
-                    <input
-                      name="number"
-                      onChange={(e) => {
-                        handleArrayOfObjectInputChange(e, 0);
-                      }}
-                      value={formData.resultStatistics[0]!.number}
-                      type="text"
-                      placeholder="Default Input"
-                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-3 block text-black dark:text-white">
-                      number
-                    </label>
-                    <input
-                      name="number"
-                      onChange={(e) => {
-                        handleArrayOfObjectInputChange(e, 1);
-                      }}
-                      value={formData.resultStatistics[1]!.number}
-                      type="text"
-                      placeholder="Default Input"
-                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-3 block text-black dark:text-white">
-                      number
-                    </label>
-                    <input
-                      name="number"
-                      onChange={(e) => {
-                        handleArrayOfObjectInputChange(e, 2);
-                      }}
-                      value={formData.resultStatistics[2]!.number}
-                      type="text"
-                      placeholder="Default Input"
-                      className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-                  </div>
-                </div>
-              </div>
+              <hr className="border-t border-black my-6" />
               <button
                 type="button"
                 onClick={handleSubmit}

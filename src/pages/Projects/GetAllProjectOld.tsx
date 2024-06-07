@@ -170,23 +170,61 @@ function GetAllProject() {
                     <h3 className="text-lg text-gray-700">
                       {'CompanyName: ' + project.projectCompanyName}
                     </h3>
+                    <p className="text-gray-500">
+                      {'CompanyDesc : ' + project.projectCompanyName}
+                    </p>
                   </div>
-
-                  <h2 className="text-xl font-bold">{'Solution'}</h2>
-                  <p className="text-gray-500">{project.projectDesc}</p>
-                  <h2 className="text-xl font-bold mt-10">{'Chellenges'}</h2>
-                  {project.chellenges.map(
-                    (chellenge: string, index: number) => {
-                      return (
-                        <div>
-                          <span>{Number(index + 1) + ')      '}</span>
-                          <span key={index} className="text-gray-500">
-                            {chellenge}
-                          </span>
-                        </div>
-                      );
-                    },
-                  )}
+                </div>
+                <div className="px-6 pb-6">
+                  <div className="mb-4">
+                    <h4 className="font-semibold mb-1">Project Description</h4>
+                    <p className="text-gray-600">{project.projectDesc}</p>
+                  </div>
+                  <div className="mb-4">
+                    <h4 className="font-semibold mb-1">Scope of Work</h4>
+                    <ul className="text-gray-700">
+                      {project.scopeOfWork.map((work: any, index: any) => (
+                        <li key={index} className="flex justify-between">
+                          <span>{work}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="mb-4">
+                    <h4 className="font-semibold mb-1">Project Goals</h4>
+                    <ul className="text-gray-700">
+                      {project.projectGoal.map((goal: any, index: any) => (
+                        <li key={index} className="flex justify-between">
+                          <span>{goal}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="mb-4">
+                    <h4 className="font-semibold mb-1">Research</h4>
+                    <p className="text-gray-700">{project.researchLine}</p>
+                  </div>
+                  <div className="mb-4 ">
+                    <h4 className="font-semibold mb-1">Result Statistics</h4>
+                    <ul className="text-gray-700">
+                      {project.resultStatistics.map((stat: any, index: any) => (
+                        <li key={index} className="flex justify-start gap-20">
+                          <span>{stat.number}</span>
+                          <span>{stat.description}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Challenges</h4>
+                    <ul className="text-gray-700">
+                      {project.chellenges.map((challenge: any, index: any) => (
+                        <li key={index} className="flex justify-between">
+                          <span>{challenge}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

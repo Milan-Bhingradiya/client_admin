@@ -50,7 +50,7 @@ function ShowAllMessages() {
   return (
     <div>
       <DefaultLayout>
-        <div className="flex flex-row flex-wrap gap-4 ">
+        <div className="flex flex-row  flex-wrap gap-4 ">
           {docs &&
             docs.map((data) => (
               <MsgCard

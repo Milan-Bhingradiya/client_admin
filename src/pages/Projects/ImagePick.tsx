@@ -9,6 +9,7 @@ export default function ImagePick() {
   const updateimgdata = mystore((state) => state.updateimgdata)
   const imgdata = mystore((state) => state.imgdata)
 
+  
   const onChange = (
     imageList: ImageListType,
     addUpdateIndex: number[] | undefined
