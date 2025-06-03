@@ -1,33 +1,40 @@
-import React from "react";
-import ImageUploading, { ImageListType } from "react-images-uploading";
-import { mystore } from "../../store/myStore";
+import React from 'react';
+import ImageUploading, { ImageListType } from 'react-images-uploading';
+import { mystore } from '../../store/myStore';
 
-export default function ImagePick() {
-  const [images, setImages] = React.useState([]);
+interface ImagePickProps {
+  setImages: (files: File[]) => void;
+}
+
+export default function ImagePick({ setImages }: ImagePickProps) {
+  const [images, setLocalImages] = React.useState([]);
   const maxNumber = 69;
 
-  const updateimgdata = mystore((state) => state.updateimgdata)
-  const imgdata = mystore((state) => state.imgdata)
+  // Define the type of your store's state
+  type MyStoreState = {
+    updateimgdata: (data: unknown) => void;
+    imgdata: unknown;
+  };
 
-  
-  const onChange = (
-    imageList: ImageListType,
-    addUpdateIndex: number[] | undefined
-  ) => {
+  const updateimgdata = mystore((state: MyStoreState) => state.updateimgdata);
+  const imgdata = mystore((state: MyStoreState) => state.imgdata);
+
+  const onChange = (imageList: ImageListType) => {
     // data for submit
     // console.log(imageList[0], addUpdateIndex);
-    console.log("here")
+    console.log('here');
     // console.log(imageList[0].file)
     // console.log(imageList.length)
 
-    let arr: any = [];
-
-    imageList.forEach(element => {
-      arr.push(element.file)
+    imageList.forEach((element) => {
+      [].push(element.file);
     });
-    updateimgdata(arr)
-    console.log(imgdata)
-    setImages(imageList as never[]);
+    updateimgdata([]);
+    console.log(imgdata);
+    setLocalImages(imageList as never[]);
+    // Extract File objects and pass to parent
+    const files = imageList.map((img) => img.file).filter(Boolean) as File[];
+    setImages(files);
   };
 
   return (
@@ -45,12 +52,12 @@ export default function ImagePick() {
           onImageUpdate,
           onImageRemove,
           isDragging,
-          dragProps
+          dragProps,
         }) => (
           // write your building UI
           <div className="upload__image-wrapper">
             <button
-              style={isDragging ? { color: "red" } : undefined}
+              style={isDragging ? { color: 'red' } : undefined}
               onClick={onImageUpload}
               {...dragProps}
             >
@@ -63,8 +70,18 @@ export default function ImagePick() {
                 <div key={index} className="image-item">
                   <img src={image.dataURL} alt="" width="200" height={200} />
                   <div className="image-item__btn-wrapper">
-                    <button className=" border-2 border-gray-300 rounded-lg px-4 py-2 bg-gray-200 hover:bg-gray-300 duration-300" onClick={() => onImageUpdate(index)}>Update</button>
-                    <button className="  border-2 border-gray-30 rounded-lg px-4 py-2 bg-gray-200 hover:bg-gray-300 duration-300" onClick={() => onImageRemove(index)}>Remove</button>
+                    <button
+                      className=" border-2 border-gray-300 rounded-lg px-4 py-2 bg-gray-200 hover:bg-gray-300 duration-300"
+                      onClick={() => onImageUpdate(index)}
+                    >
+                      Update
+                    </button>
+                    <button
+                      className="  border-2 border-gray-30 rounded-lg px-4 py-2 bg-gray-200 hover:bg-gray-300 duration-300"
+                      onClick={() => onImageRemove(index)}
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
               ))}

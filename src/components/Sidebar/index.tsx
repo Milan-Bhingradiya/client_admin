@@ -12,8 +12,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
 
-  const trigger = useRef<any>(null);
-  const sidebar = useRef<any>(null);
+  const trigger = useRef<HTMLButtonElement | null>(null);
+  const sidebar = useRef<HTMLDivElement | null>(null);
 
   const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
   const [sidebarExpanded, setSidebarExpanded] = useState(
@@ -26,8 +26,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       if (!sidebar.current || !trigger.current) return;
       if (
         !sidebarOpen ||
-        sidebar.current.contains(target) ||
-        trigger.current.contains(target)
+        sidebar.current.contains(target as Node) ||
+        trigger.current.contains(target as Node)
       )
         return;
       setSidebarOpen(false);
@@ -58,7 +58,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+      className={`absolute left-0 top-0 z-9999 flex h-screen w-65.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >

@@ -1,65 +1,89 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { firestoreInstance } from '../../utils/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
 import Loading from '../../utils/Loading';
 
 function SetHomePageProject() {
   const [formData, setFormData] = useState({
-    first: '',
-    second: '',
-    third: '',
+    project1: '',
+    project2: '',
+    project3: '',
   });
+  const [isLoading, setisLoading] = useState(false);
+  const [fetched, setFetched] = useState(false);
 
-  const handleInputChange = (event: any) => {
+  useEffect(() => {
+    // Fetch current home projects on mount
+    const fetchHomeProjects = async () => {
+      setisLoading(true);
+      try {
+        const response = await fetch(
+          'https://smit-shah-backend-80da1d71856d.herokuapp.com/home-projects',
+        );
+        const data = await response.json();
+        if (data.projects && data.projects.length > 0) {
+          setFormData({
+            project1: data.projects[0]?._id || '',
+            project2: data.projects[1]?._id || '',
+            project3: data.projects[2]?._id || '',
+          });
+        } else {
+          setFormData({ project1: '', project2: '', project3: '' });
+        }
+      } catch (error) {
+        setFormData({ project1: '', project2: '', project3: '' });
+      }
+      setFetched(true);
+      setisLoading(false);
+    };
+    fetchHomeProjects();
+  }, []);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
-    console.log(formData); // Dynamic property update
   };
 
   const writeData = async () => {
-    console.log('just before upload');
-    console.log(formData);
-
-    const docRef = doc(
-      firestoreInstance,
-      'homepageprojects',
-      'JTq65eBOyyf8mMUSkR1S',
-    );
-
-    await updateDoc(docRef, formData)
-      .then(() => {
-        alert('updated successfully!');
-        setisLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error updating document:', error);
-        alert('Error updating document try again    ' + error);
-        setisLoading(false);
-      });
+    setisLoading(true);
+    try {
+      const response = await fetch(
+        'https://smit-shah-backend-80da1d71856d.herokuapp.com/set-home-projects',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        },
+      );
+      const data = await response.json();
+      if (response.ok) {
+        alert('Updated successfully!');
+      } else {
+        alert('Error: ' + (data.error || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('Error updating home projects: ' + error);
+    }
+    setisLoading(false);
   };
-
-  const [isLoading, setisLoading] = useState(false);
 
   return (
     <DefaultLayout>
-      {isLoading && <Loading></Loading>}
-      {!isLoading && (
+      {isLoading && <Loading />}
+      {!isLoading && fetched && (
         <div>
-          {' '}
           <label className="mb-3 block text-black dark:text-white m-4">
-            Give 3 projects Id that you want to show in home page
+            Give 3 project IDs that you want to show on the home page
           </label>
           <div>
             <label className="mb-3 block text-black dark:text-white">
               First
             </label>
             <input
-              name={'first'}
+              name={'project1'}
               onChange={handleInputChange}
-              value={formData.first}
+              value={formData.project1 || 'none'}
               type="text"
-              placeholder="Default Input"
+              placeholder="Project 1 ID"
               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
           </div>
@@ -68,11 +92,11 @@ function SetHomePageProject() {
               Second
             </label>
             <input
-              name={'second'}
+              name={'project2'}
               onChange={handleInputChange}
-              value={formData.second}
+              value={formData.project2 || 'none'}
               type="text"
-              placeholder="Default Input"
+              placeholder="Project 2 ID"
               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
           </div>
@@ -81,23 +105,20 @@ function SetHomePageProject() {
               Third
             </label>
             <input
-              name={'third'}
+              name={'project3'}
               onChange={handleInputChange}
-              value={formData.third}
+              value={formData.project3 || 'none'}
               type="text"
-              placeholder="Default Input"
+              placeholder="Project 3 ID"
               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
             />
           </div>
           <button
             type="button"
-            onClick={() => {
-              setisLoading(true);
-              writeData();
-            }}
-            className=" m-4 inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
+            onClick={writeData}
+            className="m-4 inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 motion-reduce:transition-none dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
           >
-            Button
+            Save
           </button>
         </div>
       )}

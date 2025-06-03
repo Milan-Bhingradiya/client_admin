@@ -3,166 +3,112 @@ import DefaultLayout from '../../layout/DefaultLayout';
 import MultiSelect from '../../components/Forms/MultiSelect';
 import ImagePick from './ImagePick';
 
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
-import { firestoreInstance, storage } from '../../utils/firebase';
-import { v4 as generateId } from 'uuid';
-import { mystore } from '../../store/myStore';
-import { addDoc, collection } from 'firebase/firestore';
 import Loading from '../../utils/Loading';
 
-function AddProject() {
-  const [selectedscopeOfWork, setselectedscopeOfWork] = useState([]);
+// Updated interface to match backend
+interface IProject {
+  title: string;
+  client: string;
+  description: string;
+  images: string[];
+  industryName: string;
+  companyName: string;
+  solution: string;
+  challenges: string[];
+}
 
-  const func_setselectedscopeOfWork = (list: any) => {
-    setselectedscopeOfWork(list);
+function AddProject() {
+  const func_setselectedscopeOfWork = (list: string[]) => {
     console.log(list);
   };
 
-  const [formData, setFormData] = useState<{
-    title: string;
-    thumbnail: string;
-    industryName: string;
-    projectCompanyName: string;
-    solution: string;
-    screens: string[];
-    chellenges: string[];
-  }>({
+  // Updated formData to match backend
+  const [formData, setFormData] = useState<IProject>({
     title: '',
-    thumbnail: '',
+    client: '',
+    description: '',
+    images: [],
     industryName: '',
-    projectCompanyName: '',
+    companyName: '',
     solution: '',
-    screens: [],
-    chellenges: [],
+    challenges: [],
   });
 
-  const handleInputChange = (event: any) => {
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
-    console.log(formData); // Dynamic property update
   };
 
-  const handleArrayInputChange = (event: any, index: number) => {
+  const handleArrayInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number,
+  ) => {
     const { name, value } = event.target;
-    setFormData((prevFormData: any) => {
-      const updatedGoals: any[] = [...prevFormData[name]];
-      updatedGoals[index] = value;
+    setFormData((prevFormData: IProject) => {
+      const updatedArr: string[] = [...(prevFormData[name] as string[])];
+      updatedArr[index] = value;
       return {
         ...prevFormData,
-        [name]: updatedGoals,
+        [name]: updatedArr,
       };
     });
   };
 
-  const imgdata = mystore((state: any) => state.imgdata);
-  const [isImgUploaded, setisImgUploaded] = useState(false);
-
-  const uploadimage = async (projectname: string) => {
-    console.log('upload img call');
-
-    const files = imgdata; // Access all selected files
-    // const  files= e.target[0].files;
-    if (!files.length) {
-      return; // No files selected, handle the case
-    }
-
-    const uploadPromises = []; // Array to store upload promises
-
-    for (const file of files) {
-      const storageRef = ref(
-        storage,
-        `${projectname}/${generateId()}-${file.name}`,
-      );
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadPromises.push(
-        new Promise((resolve, reject) => {
-          uploadTask.on(
-            'state_changed',
-            (snapshot) => {
-              const progress = Math.round(
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
-              );
-              // Optionally update a progress bar or UI element here
-              console.log(`File ${file.name}: ${progress}% uploaded`);
-            },
-            (error) => {
-              reject(error);
-            },
-            () => {
-              getDownloadURL(uploadTask.snapshot.ref)
-                .then((downloadURL) => {
-                  resolve(downloadURL); // Resolve promise with download URL
-                })
-                .catch((error) => {
-                  reject(error); // Reject promise on download URL error
-                });
-            },
-          );
-        }),
-      );
-    }
-
-    try {
-      const downloadURLs = await Promise.all(uploadPromises);
-      // Wait for all uploads
-      // setFormData((prev: any) => {
-      //   return {
-      //     ...prev,
-      //     thumbnail: downloadURLs[0] as string,
-      //     screens: downloadURLs.splice(1)
-      //   }
-      // })
-
-      // upload data to firestore..
-      formData['thumbnail'] = downloadURLs[0] as string;
-      formData['screens'] = downloadURLs.splice(1) as string[];
-
-      writeData();
-
-      return true;
-      console.log('All files uploaded successfully:', downloadURLs);
-    } catch (error) {
-      console.error('Upload failed:', error);
-      alert(error);
-      return false;
-    }
-  };
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    setisLoading(true);
-    console.log('click');
-    console.log(imgdata);
-    const uploaddone = await uploadimage(formData.projectCompanyName);
-
-    if (uploaddone) {
-      // setisImgUploaded(true);
-      // submit data aya thumbnail khali jay chhe..
-      // console.log("now we call save data")
-      // console.log(formData)
-      // writeData();
-    } else {
-      alert('fail to upload img try again');
-    }
-  };
-
-  const writeData = async () => {
-    console.log('just before upload');
-    console.log(formData);
-
-    addDoc(collection(firestoreInstance, 'projects'), formData)
-      .then(() => {
-        alert('data uploaded successfully');
-        setisLoading(false);
-      })
-      .catch((error) => {
-        alert('Error adding document Try Again ' + error);
-        setisLoading(false);
-      });
-  };
+  // Change images state to File[]
+  const [images, setImages] = useState<File[]>([]);
 
   const [isLoading, setisLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setisLoading(true);
+    const form = new FormData();
+    form.append('title', formData.title);
+    form.append('client', formData.client);
+    form.append('description', formData.description);
+    form.append('industryName', formData.industryName);
+    form.append('companyName', formData.companyName);
+    form.append('solution', formData.solution);
+    // Append challenges as array
+    formData.challenges.filter(Boolean).forEach((challenge) => {
+      form.append('challenges[]', challenge);
+    });
+    // Append images as files
+    images.forEach((img) => {
+      form.append('images', img); // Multer expects 'images' for each file
+    });
+    try {
+      const response = await fetch(
+        'https://smit-shah-backend-80da1d71856d.herokuapp.com/addproject',
+        {
+          method: 'POST',
+          body: form,
+        },
+      );
+      if (response.ok) {
+        alert('Project added successfully');
+        setFormData({
+          title: '',
+          client: '',
+          description: '',
+          images: [],
+          industryName: '',
+          companyName: '',
+          solution: '',
+          challenges: [],
+        });
+        setImages([]);
+      } else {
+        const err = await response.json();
+        alert('Failed to add project: ' + (err.error || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('Error: ' + error);
+    }
+    setisLoading(false);
+  };
 
   return (
     <DefaultLayout>
@@ -170,11 +116,12 @@ function AddProject() {
       {!isLoading && (
         <div>
           <label className="mb-3 block text-black dark:text-white m-4">
-            First img is thumnnail, Upload total 6 images , first is considered
+            First img is thumbnail, Upload total 6 images, first is considered
             as thumbnail
           </label>
           <div className=" bg-slate-300 m-2 rounded-lg">
-            <ImagePick></ImagePick>
+            {/* Pass setImages to ImagePick if needed */}
+            <ImagePick setImages={setImages} />
           </div>
           {/* <!-- Input Fields --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -212,16 +159,42 @@ function AddProject() {
               </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">
+                  Client Name
+                </label>
+                <input
+                  name={'client'}
+                  onChange={handleInputChange}
+                  value={formData.client}
+                  type="text"
+                  placeholder="Client Name"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
                   Company Name
                 </label>
                 <input
-                  name={'projectCompanyName'}
+                  name={'companyName'}
                   onChange={handleInputChange}
-                  value={formData.projectCompanyName}
+                  value={formData.companyName}
                   type="text"
-                  placeholder="Default Input"
+                  placeholder="Company Name"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
+              </div>
+              <div>
+                <label className="mb-3 block text-black dark:text-white">
+                  Description
+                </label>
+                <textarea
+                  name={'description'}
+                  onChange={handleInputChange}
+                  value={formData.description}
+                  rows={4}
+                  placeholder="Description"
+                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                ></textarea>
               </div>
               <div>
                 <label className="mb-3 block text-black dark:text-white">
@@ -231,78 +204,36 @@ function AddProject() {
                   name={'solution'}
                   onChange={handleInputChange}
                   value={formData.solution}
-                  rows={6}
-                  placeholder="Default textarea"
+                  rows={4}
+                  placeholder="Solution"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 ></textarea>
               </div>
+
               <MultiSelect
                 id="multiSelect"
                 wrapper={func_setselectedscopeOfWork}
               />
               <label className="mb-3 block text-black dark:text-white">
-                Chellenges
+                Challenges
               </label>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  first Chellenge
-                </label>
-                <input
-                  type="text"
-                  name="chellenges"
-                  onChange={(e) => {
-                    handleArrayInputChange(e, 0);
-                  }}
-                  value={formData.chellenges[0]}
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  second Chellenge
-                </label>
-                <input
-                  type="text"
-                  name="chellenges"
-                  onChange={(e) => {
-                    handleArrayInputChange(e, 1);
-                  }}
-                  value={formData.chellenges[1]}
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  third Chellenge
-                </label>
-                <input
-                  type="text"
-                  name="chellenges"
-                  onChange={(e) => {
-                    handleArrayInputChange(e, 2);
-                  }}
-                  value={formData.chellenges[2]}
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
-              <div>
-                <label className="mb-3 block text-black dark:text-white">
-                  fouth Chellenge
-                </label>
-                <input
-                  type="text"
-                  name="chellenges"
-                  onChange={(e) => {
-                    handleArrayInputChange(e, 3);
-                  }}
-                  value={formData.chellenges[3]}
-                  placeholder="Default Input"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                />
-              </div>
+              {[0, 1, 2, 3].map((idx) => (
+                <div key={idx}>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Challenge {idx + 1}
+                  </label>
+                  <input
+                    type="text"
+                    name="challenges"
+                    onChange={(e) => {
+                      handleArrayInputChange(e, idx);
+                    }}
+                    value={formData.challenges[idx] || ''}
+                    placeholder={`Challenge ${idx + 1}`}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+              ))}
               <hr className="border-t border-black my-6" />
               <button
                 type="button"
