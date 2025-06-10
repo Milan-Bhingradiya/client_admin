@@ -37,7 +37,7 @@ function GetAllProject() {
 
   return (
     <DefaultLayout>
-      <div className="  flex-wrap p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className=" flex-wrap p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((project) => (
           <div
             key={project._id}

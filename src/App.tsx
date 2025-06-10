@@ -1,3 +1,4 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
@@ -7,6 +8,9 @@ import AddProject from './pages/Projects/AddProject';
 import GetAllProject from './pages/Projects/GetAllProject';
 import SetHomePageProject from './pages/Projects/SetHomePageProject';
 import ShowAllMessages from './pages/messages/ShowAllMessages';
+import ShowAllBlogs from './pages/blogs/ShowAllBlogs';
+import AddBlog from './pages/blogs/AddBlog';
+import ShowBlog from './pages/blogs/ShowBlog';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,6 +29,9 @@ function App() {
   ) : (
     <>
       <Routes>
+        <Route path="/blogs" element={<ShowAllBlogs />} />
+        <Route path="/addblog" element={<AddBlog />} />
+        <Route path="/blog/:id" element={<ShowBlog />} />
         <Route
           path="/"
           element={
