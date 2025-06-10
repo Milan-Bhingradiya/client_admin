@@ -21,6 +21,29 @@ export default function ShowAllBlogs() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this blog?',
+    );
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(
+        `https://smit-shah-backend-80da1d71856d.herokuapp.com/blog/${id}`,
+        {
+          method: 'DELETE',
+        },
+      );
+      if (res.ok) {
+        setBlogs((prev) => prev.filter((blog) => blog._id !== id));
+      } else {
+        alert('Failed to delete blog.');
+      }
+    } catch {
+      alert('Failed to delete blog.');
+    }
+  };
+
   return (
     <DefaultLayout>
       <div className="flex justify-between items-center mb-6">
@@ -34,8 +57,11 @@ export default function ShowAllBlogs() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogs.map((blog) => (
-            <Link to={`/blog/${blog._id}`} key={blog._id}>
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition">
+            <div
+              key={blog._id}
+              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition relative"
+            >
+              <Link to={`/blog/${blog._id}`}>
                 <img
                   src={blog.imageUrl}
                   alt={blog.title}
@@ -48,8 +74,28 @@ export default function ShowAllBlogs() {
                     {new Date(blog.createdAt).toLocaleString()}
                   </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+              <button
+                onClick={() => handleDelete(blog._id)}
+                className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded hover:bg-red-600"
+                title="Delete"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
           ))}
         </div>
       )}
